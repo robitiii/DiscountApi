@@ -1,4 +1,5 @@
-export const discountCodes = [
+export default function handler(req, res) {
+ const discountCodes = [
   '!004a10off', '0!14a10off', '02!4a10off', '034!a10off', '044a!10off', '054a1!0off', '064a10!off', '074a10o!ff', '084a10of!f',
   '094a10off!', '104a10off!', '114a10of!f', '124a10o!ff', '134a10!off', '144a1!0off', '154a!10off', '164!a10off', '17!4a10off',
   '1!84a10off', '!194a10off', '!204a10off', '2!14a10off', '22!4a10off', '234!a10off', '244a!10off', '254a1!0off', '264a10!off',
@@ -55,3 +56,30 @@ export const discountCodes = [
   '4954a!10off', '4964!a10off', '497!4a10off', '49!84a10off', '49!94a10off', '!5004a10off', '5!014a10off', '50!24a10off',
   '503!4a10off', '5044!a10off', '5054a!10off', '5064a1!0off', '5074a10!off', '5084a10o!ff', '5094a10of!f'
 ];
+ // get discount code from query string → /api/discount?code=0!14a10off
+  const { code } = req.query;
+
+  if (!code) {
+    return res.status(400).json({
+      success: false,
+      message: "Please provide a discount code (e.g. ?code=0!14a10off)"
+    });
+  }
+
+  const isValid = discountCodes.includes(code.trim());
+
+  if (isValid) {
+    return res.status(200).json({
+      success: true,
+      valid: true,
+      discount: 10,
+      message: "Discount applied successfully!"
+    });
+  }
+
+  return res.status(404).json({
+    success: false,
+    valid: false,
+    message: "Invalid or expired discount code."
+  });
+};
